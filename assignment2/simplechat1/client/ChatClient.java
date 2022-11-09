@@ -7,6 +7,7 @@ package client;
 import ocsf.client.*;
 import common.*;
 import java.io.*;
+import java.net.ConnectException;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -64,17 +65,68 @@ public class ChatClient extends AbstractClient
    *
    * @param message The message from the UI.    
    */
-  public void handleMessageFromClientUI(String message)
+  public void handleMessageFromClientUI(String message) //Modified for E50 SP
   {
-    try
-    {
-      sendToServer(message);
+    // Modified for E
+    if(message.startsWith("#sethost ")){
+      setHost(message.substring(9));
     }
-    catch(IOException e)
-    {
-      clientUI.display
-        ("Could not send message to server.  Terminating client.");
-      quit();
+    else if(message.startsWith("#setport ")){
+      setPort(Integer.parseInt(message.substring(9)));
+    }
+    // Every command excluding sethost and setport
+    else if(message.charAt(0) == '#'){
+      switch(message){
+        case "#quit":
+        quit();
+        break;
+
+        case "#logoff":
+        try{
+          closeConnection();
+        }
+        catch(IOException e) {
+          System.out.println("Could not close connection.");
+        }
+        break;
+
+        case "#login":
+        if(!isConnected()){
+          try{
+            openConnection();
+          }
+          catch(IOException e){
+            System.out.println("Connection could not be established.");
+          }
+        }
+        else{
+          System.out.println("Error: Already connected to server.");
+        }
+        break;
+
+        case "#gethost":
+        System.out.println(getHost());
+        break;
+
+        case "#getport":
+        System.out.println(getPort());
+        break;
+
+        default:
+        System.out.println("Error. Not a valid command.");
+      }
+    }
+    else{
+      try
+      {
+        sendToServer(message);
+      }
+      catch(IOException e)
+      {
+        clientUI.display
+          ("Could not send message to server.  Terminating client.");
+        quit();
+      }
     }
   }
   

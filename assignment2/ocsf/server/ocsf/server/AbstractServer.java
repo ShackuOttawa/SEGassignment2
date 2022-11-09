@@ -326,7 +326,7 @@ public abstract class AbstractServer implements Runnable
           {
             ConnectionToClient c = new ConnectionToClient(
               this.clientThreadGroup, clientSocket, this);
-            System.out.println("New Client Connected."); // Modified for E49 SP
+            System.out.println("New Client Connected from IP " + clientSocket); // Modified for E49 SP
           }
         }
         catch (InterruptedIOException exception)
