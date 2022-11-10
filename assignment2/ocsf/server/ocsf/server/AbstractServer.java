@@ -79,6 +79,12 @@ public abstract class AbstractServer implements Runnable
    */
   private boolean readyToStop = false;
 
+  /*
+   * Variable implemented for checking the number of users connected.
+   * To be used in the run() method to show if and how many users have disconnected.
+   */
+  private int usersconnected = 0;
+
 
 // CONSTRUCTOR ******************************************************
 
@@ -326,7 +332,9 @@ public abstract class AbstractServer implements Runnable
           {
             ConnectionToClient c = new ConnectionToClient(
               this.clientThreadGroup, clientSocket, this);
-            System.out.println("New Client Connected from IP " + clientSocket); // Modified for E49 SP
+            
+              usersconnected++; 
+            System.out.println("New Client Connected from IP " + clientSocket + "\n " + usersconnected + " users connected currently"); // Modified for E49 SP
           }
         }
         catch (InterruptedIOException exception)
@@ -334,6 +342,15 @@ public abstract class AbstractServer implements Runnable
           // This will be thrown when a timeout occurs.
           // The server will continue to listen if not ready to stop.
         }
+
+        // IMPLEMENTATION OF CHECKING FOR DISCONNECTED USERS. Modified for E49 DJ
+        if(getClientConnections().length < usersconnected){
+          for(int i = 0; i < usersconnected - getClientConnections().length; i++){
+          System.out.print("A user has disconnected.\n");
+          }
+          usersconnected = getNumberOfClients();
+        }
+
       }
 
       // call the hook method to notify that the server has stopped
