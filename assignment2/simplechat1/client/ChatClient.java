@@ -65,13 +65,13 @@ public class ChatClient extends AbstractClient
    *
    * @param message The message from the UI.    
    */
-  public void handleMessageFromClientUI(String message) //Modified for E50 SP
+  public void handleMessageFromClientUI(String message) //Modified for E49 SP
   {
     // Modified for E
-    if(message.startsWith("#sethost ")){
+    if(message.startsWith("#sethost ") && !isConnected()){
       setHost(message.substring(9));
     }
-    else if(message.startsWith("#setport ")){
+    else if(message.startsWith("#setport ") && !isConnected()){
       setPort(Integer.parseInt(message.substring(9)));
     }
     // Every command excluding sethost and setport
@@ -113,7 +113,7 @@ public class ChatClient extends AbstractClient
         break;
 
         default:
-        System.out.println("Error. Not a valid command.");
+        System.out.println("Error. Not a valid command. / cannot use command while logged on.");
       }
     }
     else{

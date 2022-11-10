@@ -268,9 +268,13 @@ public abstract class AbstractClient implements Runnable {
 	 * attempting to reconnect.
 	 */
 	protected void connectionClosed() { // Modified for E49 SP
-		System.out.println("The server has shut down.");
 		System.out.println("Connection closed.");
-		System.exit(0);
+		try{
+			closeAll();
+		}
+		catch(IOException e){
+			System.out.println("Could not close connection.");
+		}
 	}
 
 	/**
@@ -282,12 +286,14 @@ public abstract class AbstractClient implements Runnable {
 	 *            the exception raised.
 	 */
 	protected void connectionException(Exception exception) { // Modified for E49 SP
+		System.out.println("The server has shut down.");
 		try{
 			closeConnection();
 		}
 		catch(IOException e){
 			System.out.println("Failed to close connection");
 		}
+		System.exit(1);
 	}
 
 	/**
